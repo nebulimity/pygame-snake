@@ -3,18 +3,18 @@ import sys
 import random
 import config
 
+
 def draw_snake(screen, snake_pos):
     index = 0
     for segment in snake_pos:
         pygame.draw.rect(screen, config.COLORS["body_inner"], (segment[0], segment[1], config.CELL_SIZE, config.CELL_SIZE))
-        if index == 0:
-            pygame.draw.rect(screen, config.COLORS["body_inner"], (segment[0] + 1, segment[1] + 1, config.CELL_SIZE - 2, config.CELL_SIZE - 2))
-        else:
-            pygame.draw.rect(screen, config.COLORS["body_inner"], (segment[0] + 1, segment[1] + 1, config.CELL_SIZE - 2, config.CELL_SIZE - 2))
+        pygame.draw.rect(screen, config.COLORS["body_inner"], (segment[0] + 1, segment[1] + 1, config.CELL_SIZE - 2, config.CELL_SIZE - 2))
         index += 1
+
 
 def draw_apple(screen, apple_pos):
     pygame.draw.rect(screen, config.COLORS["apple_color"], (apple_pos[0], apple_pos[1], config.CELL_SIZE, config.CELL_SIZE))
+
 
 def draw_text(screen, score, font, fps):
     score_text = font.render(f"Score: {score}", True, config.COLORS["black"])
@@ -24,6 +24,7 @@ def draw_text(screen, score, font, fps):
     screen.blit(high_score_text, (10, 40))
     screen.blit(speed_text, (10, 70))
 
+
 def draw_checkers(screen):
     for x in range(0, config.WINDOW_RESOLUTION[0], config.CELL_SIZE):
         for y in range(0, config.WINDOW_RESOLUTION[1], config.CELL_SIZE):
@@ -31,6 +32,7 @@ def draw_checkers(screen):
                 pygame.draw.rect(screen, config.COLORS["background_1"], (x, y, config.CELL_SIZE, config.CELL_SIZE))
             else:
                 pygame.draw.rect(screen, config.COLORS["background_2"], (x, y, config.CELL_SIZE, config.CELL_SIZE))
+
 
 def run_snake_game():
     screen = pygame.display.set_mode(config.WINDOW_RESOLUTION)
@@ -41,7 +43,8 @@ def run_snake_game():
     score = 0
     snake_pos = [[int(config.WINDOW_RESOLUTION[0] / 2), int(config.WINDOW_RESOLUTION[1] / 2)]]
     snake_pos.extend([[int(config.WINDOW_RESOLUTION[0] / 2), int(config.WINDOW_RESOLUTION[1] / 2) + config.CELL_SIZE * i] for i in range(1, 4)])
-    apple_pos = [random.randint(0, (config.WINDOW_RESOLUTION[0] - config.CELL_SIZE) // config.CELL_SIZE) * config.CELL_SIZE, random.randint(0, (config.WINDOW_RESOLUTION[1] - config.CELL_SIZE) // config.CELL_SIZE) * config.CELL_SIZE]
+    apple_pos = [random.randint(0, (config.WINDOW_RESOLUTION[0] - config.CELL_SIZE) // config.CELL_SIZE) * config.CELL_SIZE,
+                 random.randint(0, (config.WINDOW_RESOLUTION[1] - config.CELL_SIZE) // config.CELL_SIZE) * config.CELL_SIZE]
     font = pygame.font.SysFont(None, 35)
     fps = config.FPS
 
@@ -51,21 +54,23 @@ def run_snake_game():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                # Save high score before quitting
+                config.save_high_score()
                 running_game = False
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 new_direction = direction
-                if event.key == pygame.K_UP and direction != 3: 
+                if event.key == pygame.K_UP and direction != 3:
                     new_direction = 1
                     config.SOUNDS["up"].play()
-                elif event.key == pygame.K_RIGHT and direction != 4: 
+                elif event.key == pygame.K_RIGHT and direction != 4:
                     new_direction = 2
                     config.SOUNDS["right"].play()
-                elif event.key == pygame.K_DOWN and direction != 1: 
-                    new_direction = 3 
+                elif event.key == pygame.K_DOWN and direction != 1:
+                    new_direction = 3
                     config.SOUNDS["down"].play()
-                elif event.key == pygame.K_LEFT and direction != 2: 
+                elif event.key == pygame.K_LEFT and direction != 2:
                     new_direction = 4
                     config.SOUNDS["left"].play()
 
@@ -85,12 +90,15 @@ def run_snake_game():
                 config.HIGH_SCORE = score
             if score % 10 == 0 and fps < 30:
                 fps += 2
-            apple_pos = [random.randint(0, (config.WINDOW_RESOLUTION[0] - config.CELL_SIZE) // config.CELL_SIZE) * config.CELL_SIZE, random.randint(0, (config.WINDOW_RESOLUTION[1] - config.CELL_SIZE) // config.CELL_SIZE) * config.CELL_SIZE]
+            apple_pos = [random.randint(0, (config.WINDOW_RESOLUTION[0] - config.CELL_SIZE) // config.CELL_SIZE) * config.CELL_SIZE,
+                         random.randint(0, (config.WINDOW_RESOLUTION[1] - config.CELL_SIZE) // config.CELL_SIZE) * config.CELL_SIZE]
             pygame.mixer.Sound.play(config.SOUNDS["eat"])
         else:
             snake_pos.pop()
 
-        if (snake_pos[0][0] < 0 or snake_pos[0][0] >= config.WINDOW_RESOLUTION[0] or snake_pos[0][1] < 0 or snake_pos[0][1] >= config.WINDOW_RESOLUTION[1] or snake_pos[0] in snake_pos[1:]):
+        if (snake_pos[0][0] < 0 or snake_pos[0][0] >= config.WINDOW_RESOLUTION[0] or
+            snake_pos[0][1] < 0 or snake_pos[0][1] >= config.WINDOW_RESOLUTION[1] or
+            snake_pos[0] in snake_pos[1:]):
             pygame.mixer.Sound.play(config.SOUNDS["bump"])
             running_game = False
 
@@ -100,6 +108,10 @@ def run_snake_game():
 
         pygame.display.flip()
         clock.tick(fps)
+
+    # After game over, save any new high score
+    config.save_high_score()
+
 
 def main_menu():
     screen = pygame.display.set_mode(config.WINDOW_RESOLUTION)
@@ -142,6 +154,8 @@ def main_menu():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                # Save high score before exiting from menu
+                config.save_high_score()
                 running_menu = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if play_button_rect.collidepoint(event.pos):
@@ -153,6 +167,7 @@ def main_menu():
 
     pygame.quit()
     sys.exit()
+
 
 if __name__ == "__main__":
     pygame.init()

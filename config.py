@@ -1,12 +1,20 @@
+# config.py
 import pygame
+import os
 pygame.mixer.init()
 
 WINDOW_RESOLUTION = (800, 600)
 FPS = 10
-HIGH_SCORE = 0
 VOLUME = 1
 MUSIC = "sounds/mule_bitblaster_mix.wav"
 CELL_SIZE = 25
+HIGH_SCORE_FILE = "high_score.txt"
+try:
+    with open(HIGH_SCORE_FILE, "r") as f:
+        HIGH_SCORE = int(f.read())
+except (FileNotFoundError, ValueError):
+    HIGH_SCORE = 0
+
 COLORS = {
     "background_1": (170,215,81),
     "background_2": (162,209,73),
@@ -25,3 +33,10 @@ SOUNDS = {
     "bump": pygame.mixer.Sound("sounds/sfx/bump.wav"),
     "win": pygame.mixer.Sound("sounds/sfx/win.wav"),
 }
+
+def save_high_score():
+    try:
+        with open(HIGH_SCORE_FILE, "w") as f:
+            f.write(str(HIGH_SCORE))
+    except IOError as e:
+        print(f"Error saving high score: {e}")
