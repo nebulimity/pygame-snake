@@ -1,6 +1,6 @@
-# pygame-template
+# pygame-snake
 
-a simple pygame template with a main loop, background color, and a config file
+a simple pygame snake game with a main menu and speed multiplier
 
 Dependencies:
 
@@ -9,4 +9,4 @@ python 3.7+
 pygame 2.5+
 ```
 
-Run `main.py`.
+Run `main.py` to play.
