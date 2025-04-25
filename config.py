@@ -3,6 +3,7 @@ pygame.mixer.init()
 
 WINDOW_RESOLUTION = (800, 600)
 FPS = 10
+HIGH_SCORE = 0
 VOLUME = 1
 MUSIC = "sounds/mule_bitblaster_mix.wav"
 CELL_SIZE = 25
@@ -15,7 +16,6 @@ COLORS = {
     "body_outer": (78,124,246),
     "apple_color": (231,71,29)
 }
-
 SOUNDS = {
     "up": pygame.mixer.Sound("sounds/sfx/up.wav"),
     "right": pygame.mixer.Sound("sounds/sfx/right.wav"),
