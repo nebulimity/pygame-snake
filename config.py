@@ -1,6 +1,4 @@
-# config.py
 import pygame
-import os
 pygame.mixer.init()
 
 WINDOW_RESOLUTION = (800, 600)

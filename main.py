@@ -3,7 +3,6 @@ import sys
 import random
 import config
 
-
 def draw_snake(screen, snake_pos):
     index = 0
     for segment in snake_pos:
@@ -41,7 +40,7 @@ def spawn_apple(snake_pos):
     return apple
 
 def run_snake_game():
-    screen = pygame.display.set_mode(config.WINDOW_RESOLUTION)
+    screen = pygame.display.set_mode(config.WINDOW_RESOLUTION, pygame.RESIZABLE)
     pygame.display.set_caption("Snake - Game")
     clock = pygame.time.Clock()
 
@@ -66,16 +65,16 @@ def run_snake_game():
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 new_direction = direction
-                if event.key == pygame.K_UP and direction != 3:
+                if (event.key == pygame.K_UP or event.key == pygame.K_w) and direction != 3:
                     new_direction = 1
                     config.SOUNDS["up"].play()
-                elif event.key == pygame.K_RIGHT and direction != 4:
+                elif (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and direction != 4:
                     new_direction = 2
                     config.SOUNDS["right"].play()
-                elif event.key == pygame.K_DOWN and direction != 1:
+                elif (event.key == pygame.K_DOWN or event.key == pygame.K_s) and direction != 1:
                     new_direction = 3
                     config.SOUNDS["down"].play()
-                elif event.key == pygame.K_LEFT and direction != 2:
+                elif (event.key == pygame.K_LEFT or event.key == pygame.K_a) and direction != 2:
                     new_direction = 4
                     config.SOUNDS["left"].play()
 
@@ -116,7 +115,7 @@ def run_snake_game():
     config.save_high_score()
 
 def main_menu():
-    screen = pygame.display.set_mode(config.WINDOW_RESOLUTION)
+    screen = pygame.display.set_mode(config.WINDOW_RESOLUTION, pygame.RESIZABLE)
     pygame.display.set_caption("Snake - Main Menu")
     font = pygame.font.SysFont(None, 40)
     snake_font = pygame.font.SysFont(None, 100)
